@@ -1,0 +1,181 @@
+using System;
+class projet {
+	static void Main(){
+		int u, v, n, m;
+		Console.WriteLine("Entrez le nombre de joueurs: ");
+		n = int.Parse(Console.ReadLine());
+		Console.WriteLine("Entrez le nombre d'options par joueur: ");
+		m = int.Parse(Console.ReadLine());
+		double combi = Math.Pow(m,(n-1)); //on a m^(n-1) façons differentes de fixer les jeux des autres
+		double combi_1 = Math.Pow(m,n); //Ceci a du etre créé car n^m n'est pas accepté dans une boucle "for" comme condition
+		
+		double [,] payements = new double [n*m, (int)combi];
+		int [,] bi = new int [n*m, (int)combi];
+		
+		//~ payements [0,0] = 4;
+		//~ payements [1,0] = 8;
+		//~ payements [2,0] = 3;
+		//~ payements [3,0] = 1;
+		//~ payements [0,1] = 5;
+		//~ payements [1,1] = 9;
+		//~ payements [2,1] = 6;
+		//~ payements [3,1] = 6;
+		
+		int step = 1;		
+		for (v = 0; v < combi; v++){  //Creation des faux payements.
+			for (u = 0; u < n*m; u++){
+				payements [u,v] = 0 + step;
+				step++;
+			}	
+		}
+		
+		// Création du tableau binaire. 
+		for (int j = 0; j <= (combi - 1); j = j + 1){     //On a du créér la variable combi car ici on n'a pas pu utliser le symbol ^ avec des int
+			for (int player = 0; player <= n - 1; player =  player + 1){
+				for (int i = (player*m); i <= ((player + 1)*m - 2) ; i = i + 1){
+					for (int k = i + 1;k <= ((player + 1)*m - 1); k = k + 1){
+						if (payements [i, j] > payements [k, j]){
+							bi [i, j] = 1;
+							bi [k, j] = 0;}
+						if (payements [i, j] == payements [k, j]){
+							bi [i, j] = 1;
+							bi [k, j] = 1;}
+						if (payements [i, j] < payements [k, j]){
+							bi [k, j] = 1;
+							bi [i, j] = 0;}
+					}		
+				}			
+			}
+		}
+		
+		int [] temp = new int [(int)combi];
+		int [] temp_1 = new int [(int)combi];
+		int [] temp_2 = new int [(int)combi];
+		int [] temp_3 = new int [(int)combi];
+		int [] temp_4 = new int [(int)combi];
+		int [] temp_5 = new int [(int)combi];
+		int [] temp_6 = new int [(int)combi];
+    int [] temp_7 = new int [(int)combi];
+		int [] temp_8 = new int [(int)combi];
+
+
+
+		
+		//code pour convertir une matrice n*m en ligne
+		step = 0;
+		for (v = 0; v < m; v++){
+			for (u = 0; u < m; u++){
+				temp [step] = bi [u,v];
+				step++;
+			}	
+		}
+		step = 0;
+		for (v = m; v < 2*m; v++){
+			for (u = m; u < 2*m; u++){
+				temp_3 [step] = bi [u,v];
+				step++;
+			}	
+		}
+				step = 0;
+		for (v = 2*m; v < 3*m; v++){
+			for (u = 2*m; u < 3*m; u++){
+				temp_6 [step] = bi [u,v];
+				step++;
+			}	
+		}
+		
+		//code pour convertir m petites matrices en ligne
+		step = 0;
+		for (v = 0; v < combi; v = v + m){
+			for (u = (n-1)*m; u < n*m; u++){
+				temp_1 [step] = bi [u,v];
+				step++;
+			}	
+		}
+		step = 0;
+		for (v = 1; v < combi; v = v + m){
+			for (u = (n-1)*m; u < n*m; u++){
+				temp_4 [step] = bi [u,v];
+				step++;
+			}	
+		}
+		step = 0;
+		for (v = 2; v < combi; v = v + m){
+			for (u = (n-1)*m; u < n*m; u++){
+				temp_7 [step] = bi [u,v];
+				step++;
+			}	
+		}
+		
+		//code pour sortir une ligne de bi[]
+		step = 0;
+		for (v = 0; v < combi; v++){
+			u = m;
+			temp_2 [step] = bi [u,v];
+			step++;
+		}	
+		step = 0;
+		for (v = 0; v < combi; v++){
+			u = m+1;
+			temp_5 [step] = bi [u,v];
+			step++;
+		}	
+		step = 0;
+		for (v = 0; v < combi; v++){
+			u = m+2;
+			temp_8 [step] = bi [u,v];
+			step++;
+		}	
+
+		int [] somme1 = new int [(int)combi];
+		int [] somme2 = new int [(int)combi];
+		int [] somme3 = new int [(int)combi];
+		
+		
+		for (u = 0; u < combi; u++){
+			somme1 [u] = temp[u] + temp_1[u] + temp_2[u];
+			somme2 [u] = temp_3[u] + temp_4[u] + temp_5[u];
+			somme3 [u] = temp_6[u] + temp_7[u] + temp_8[u];
+		}
+		for (u = 0; u < combi; u++){
+			if (somme1 [u] == n)
+				Console.WriteLine( "La strategie qui correspond a la première ligne des stratégies du joueur 2 et la " + u +"eme colonne est un EN");
+			if (somme2 [u] == n)
+				Console.WriteLine( "La strategie qui correspond a la deuxième ligne des stratégies du joueur 2 et la " + u +"eme colonne est un EN");
+			if (somme3 [u] == n)
+				Console.WriteLine( "La strategie qui correspond a la troisième ligne des stratégies du joueur 2 et la " + u +"eme colonne est un EN");
+		}
+		
+		for (u = 0; u < n*m; u++){
+			for (v = 0; v <combi; v++){
+				Console.Write (payements [u,v] + "\t|\t");}
+				Console.WriteLine();}
+	Console.WriteLine();
+		for (u = 0; u < n*m; u++){
+			for (v = 0; v < combi; v++){
+				Console.Write (bi [u,v] + "\t|\t");}
+				Console.WriteLine();}
+	Console.WriteLine();					
+		for (u = 0; u < combi; u++){
+				Console.Write (temp_6 [u] + "\t|\t");}
+	Console.WriteLine();	
+		for (u = 0; u < combi; u++){
+				Console.Write (temp_7 [u] + "\t|\t");}
+	Console.WriteLine();					
+		for (u = 0; u < combi; u++){
+				Console.Write (temp_8 [u] + "\t|\t");}
+	Console.WriteLine();	
+		for (u = 0; u < combi; u++){
+				Console.Write (somme1 [u] + "\t|\t");}
+	Console.WriteLine();
+		for (u = 0; u < combi; u++){
+				Console.Write (somme2 [u] + "\t|\t");}
+	Console.WriteLine();
+		for (u = 0; u < combi; u++){
+				Console.Write (somme3 [u] + "\t|\t");}
+	Console.WriteLine();
+}
+}
+
+
+
